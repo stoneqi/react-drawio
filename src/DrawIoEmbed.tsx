@@ -120,7 +120,7 @@ export const DrawIoEmbed = forwardRef<DrawIoEmbedRef, DrawIoEmbedProps>(
             }
           }
         },
-        baseUrl
+        iframeUrl
       );
     };
 

@@ -14,6 +14,10 @@ const config: StorybookConfig = {
   docs: {
     autodocs: 'tag'
   },
-  staticDirs: ['../public']
+  staticDirs: [
+    '../public',
+    // Serve local/offline diagrams.net assets at /drawio/ for the demo
+    { from: '../drawio-dev/src/main/webapp', to: '/drawio' }
+  ]
 };
 export default config;

@@ -6,7 +6,9 @@ export type DrawIoEmbedProps = {
    */
   autosave?: boolean;
   /**
-   * Base URL for draw.io embed URL. Defaults to https://embed.diagrams.net
+   * Base URL for draw.io embed URL.
+   *
+   * Defaults to `/drawio/index.html` (offline/self-hosted). You can still use the hosted version by setting this to `https://embed.diagrams.net`.
    */
   baseUrl?: string;
   /**

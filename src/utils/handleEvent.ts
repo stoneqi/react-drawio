@@ -9,16 +9,26 @@ type EventHandler = {
 export function handleEvent(
   event: MessageEvent,
   handlers: EventHandler,
-  baseUrl?: string
+  iframeUrl?: string
 ) {
-  if (
-    !event.origin.includes('embed.diagrams.net') &&
-    baseUrl &&
-    !baseUrl.includes(event.origin) &&
-    !event.origin.includes(baseUrl)
-  ) {
-    return;
+  const allowedOrigins = new Set<string>();
+
+  // Backwards compatibility with the old default
+  allowedOrigins.add('https://embed.diagrams.net');
+
+  if (iframeUrl) {
+    try {
+      const resolved =
+        typeof window !== 'undefined'
+          ? new URL(iframeUrl, window.location.href)
+          : new URL(iframeUrl);
+      allowedOrigins.add(resolved.origin);
+    } catch {
+      // ignore
+    }
   }
+
+  if (allowedOrigins.size > 0 && !allowedOrigins.has(event.origin)) return;
 
   try {
     const data = JSON.parse(event.data) as EmbedEvents;

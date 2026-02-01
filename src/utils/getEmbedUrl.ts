@@ -5,14 +5,13 @@ export const getEmbedUrl = (
   urlParameters?: UrlParameters,
   addConfiguration?: boolean
 ) => {
-  const url = new URL(baseUrl ?? 'https://embed.diagrams.net');
   const urlSearchParams = new URLSearchParams();
 
-  urlSearchParams.append('embed', '1');
-  urlSearchParams.append('proto', 'json');
+  urlSearchParams.set('embed', '1');
+  urlSearchParams.set('proto', 'json');
 
   if (addConfiguration) {
-    urlSearchParams.append('configure', '1');
+    urlSearchParams.set('configure', '1');
   }
 
   if (urlParameters) {
@@ -21,15 +20,31 @@ export const getEmbedUrl = (
 
       if (value !== undefined) {
         if (typeof value === 'boolean') {
-          urlSearchParams.append(key, value ? '1' : '0');
+          urlSearchParams.set(key, value ? '1' : '0');
         } else {
-          urlSearchParams.append(key, value.toString());
+          urlSearchParams.set(key, value.toString());
         }
       }
     });
   }
 
-  url.search = urlSearchParams.toString();
+  const resolvedBaseUrl = baseUrl ?? '/drawio/index.html';
 
-  return url.toString();
+  // baseUrl can be absolute (https://...) or relative (/drawio/). Support both.
+  try {
+    const url = new URL(resolvedBaseUrl);
+    url.search = urlSearchParams.toString();
+    return url.toString();
+  } catch {
+    const [pathWithQuery, hash] = resolvedBaseUrl.split('#', 2);
+    const [path, existingQuery] = pathWithQuery.split('?', 2);
+    const params = new URLSearchParams(existingQuery ?? '');
+
+    urlSearchParams.forEach((value, key) => {
+      params.set(key, value);
+    });
+
+    const search = params.toString();
+    return `${path}${search ? `?${search}` : ''}${hash ? `#${hash}` : ''}`;
+  }
 };

@@ -102,6 +102,20 @@ function App() {
 ## API Documentation
 All options are based on the documentation at <a href="https://www.drawio.com/doc/faq/embed-mode">draw.io/doc/faq/embed-mode</a>. If something is off, please let me know by creating an <a href="https://github.com/marcveens/react-drawio/issues/new">issue</a>.
 
+## Offline / self-hosted Diagrams.net (no external network)
+By default, this library will now load Diagrams.net from **`/drawio/index.html`** (same origin) instead of `https://embed.diagrams.net`.
+
+To make this work in production you must serve the Diagrams.net webapp assets at **`/drawio/`**.
+
+- The build step copies the upstream Diagrams.net webapp (kept in `drawio-dev/src/main/webapp`) into `dist/drawio` while preserving the original folder structure for easier upgrades.
+- In your app/server, expose `dist/drawio` as static files at `/drawio/` (so `/drawio/index.html` exists).
+
+If you prefer the hosted version, set:
+
+```tsx
+<DrawIoEmbed baseUrl="https://embed.diagrams.net" />
+```
+
 ### `props`
 - `autosave` (`boolean`, default: `false`)\
   When enabled, it will call `onAutoSave` for all changes made
@@ -115,8 +129,8 @@ All options are based on the documentation at <a href="https://www.drawio.com/do
   For configuration options, see https://www.drawio.com/doc/faq/configure-diagram-editor
 - `exportFormat` (`'html' | 'html2' | 'svg' | 'xmlsvg' | 'png' | 'xmlpng'`, default: `xmlsvg`)\
   Set export format
-- `baseUrl` (`string`, default: `https://embed.diagrams.net`)\
-  For self hosted instances of draw.io, insert your URL here
+- `baseUrl` (`string`, default: `/drawio/index.html`)\
+  Base URL for the embed iframe. For hosted diagrams.net, use `https://embed.diagrams.net`. For self-hosted, point to your local `/drawio/`.
 
 - `onLoad` (`(data: EventLoad) => void`, optional)
 - `onAutoSave` (`(data: EventAutoSave) => void`, optional)\
