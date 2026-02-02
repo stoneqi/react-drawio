@@ -224,7 +224,14 @@ export const PickLayout: Story = {
 };
 
 export const SetStatus: Story = {
-  args: {},
+  args: {
+    urlParameters: {
+      ui: 'kennedy',
+      spin: true,
+      libraries: true,
+      saveAndExit: false
+    }
+  },
   decorators: [
     (Story) => {
       const [isLoaded, setIsLoaded] = useState(false);

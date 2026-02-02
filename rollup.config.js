@@ -57,6 +57,20 @@ function copyDrawIoWebappToDist() {
       await fs.rm(targetDir, { recursive: true, force: true });
       await fs.mkdir(path.dirname(targetDir), { recursive: true });
       await fs.cp(sourceDir, targetDir, { recursive: true });
+
+      // Clean up .map files from the copied assets
+      async function deleteMapFiles(dir) {
+        const entries = await fs.readdir(dir, { withFileTypes: true });
+        for (const entry of entries) {
+          const fullPath = path.join(dir, entry.name);
+          if (entry.isDirectory()) {
+            await deleteMapFiles(fullPath);
+          } else if (entry.isFile() && entry.name.endsWith('.map')) {
+            await fs.unlink(fullPath);
+          }
+        }
+      }
+      await deleteMapFiles(targetDir);
     }
   };
 }
@@ -71,19 +85,19 @@ const plugins = (targets) => [
 ];
 
 export default {
-  input: pkg.exports,
+  input: './src/index.ts',
   plugins: plugins('defaults and supports es6-module'),
   external,
   output: [
     {
       file: pkg.publishConfig.exports.import,
       format: 'es',
-      sourcemap: true
+      sourcemap: false
     },
     {
       file: pkg.publishConfig.exports.require,
       format: 'cjs',
-      sourcemap: true
+      sourcemap: false
     }
   ]
 };

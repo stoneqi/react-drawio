@@ -28,7 +28,7 @@ export const getEmbedUrl = (
     });
   }
 
-  const resolvedBaseUrl = baseUrl ?? '/drawio/index.html';
+  const resolvedBaseUrl = baseUrl ?? 'drawio/index.html';
 
   // baseUrl can be absolute (https://...) or relative (/drawio/). Support both.
   try {

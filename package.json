@@ -3,7 +3,11 @@
   "version": "1.0.7",
   "type": "module",
   "description": "React component for integrating the Diagrams (draw.io) embed iframe",
-  "main": "index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "bin": {
+    "react-drawio-copy-assets": "./bin/copy-assets.js"
+  },
   "scripts": {
     "prepublishOnly": "npm run build && clean-publish",
     "emit-declarations": "tsc --emitDeclarationOnly",
@@ -62,7 +66,11 @@
   },
   "sideEffects": false,
   "types": "./dist/index.d.ts",
-  "exports": "./src/index.ts",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
   "publishConfig": {
     "main": "./dist/index.cjs",
     "module": "./dist/index.js",
